@@ -1,5 +1,9 @@
 #lang racket
 
+(define atom?
+  (lambda (a)
+  (not (list? a))))
+
 (define o+
   (lambda (m n)
     (cond
@@ -123,4 +127,44 @@
       (else (cons (car lat)
                   (no-nums (cdr lat)))))))
 
-(no-nums '(a 1 b 1 c 1 d 1 e))
+; (no-nums '(a 1 b 1 c 1 d 1 e))
+
+(define all-nums
+  (lambda (lat)
+    (cond
+      ((null? lat) '())
+      ((number? (car lat))
+       (cons (car lat)
+             (all-nums (cdr lat))))
+      (else (all-nums (cdr lat))))))
+
+; (all-nums '(a 1 b 2 c 3 d 4 e))
+
+(define eqan?
+  (lambda (a1 a2)
+    (or (and (number? a1)
+             (number? a2)
+             (= a1 a2))
+        (and (atom? a1)
+             (atom? a2)
+             (eq? a1 a2)))))
+
+; (eqan? 1 2)
+; (eqan? 1 1)
+; (eqan? 1 'a)
+; (eqan? 'a 1)
+; (eqan? 'a 'a)
+
+(define occur
+  (lambda (a lat)
+    (cond
+      ((null? lat) 0)
+      ((eq? (car lat) a) (add1 (occur a (cdr lat))))
+      (else (occur a (cdr lat))))))
+
+(occur  'chuck '(how much wood
+                 could
+                 a wood chuck
+                 chuck
+                 if a wood chuck 
+                 could chuck wood))
